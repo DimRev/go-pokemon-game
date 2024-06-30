@@ -2,11 +2,6 @@ package game
 
 import "fmt"
 
-type User struct {
-	Name  string
-	Score int
-}
-
 type ItemStore struct {
 	Items []Item
 }

@@ -24,13 +24,35 @@ type Move struct {
 	Damage int
 }
 
-func (ps *PokemonStore) GetPokemonById(pokemonId string) (*Pokemon, error) {
-	for _, currPokemon := range ps.Pokemons {
-		if currPokemon.ID == pokemonId {
+func (ps *PokemonStore) DisplayPokemons() {
+	pokemonStr := ""
+	if len(ps.Pokemons) == 0 {
+		fmt.Println("No pokemons")
+	}
+	for idx, pokemon := range ps.Pokemons {
+		if idx == len(ps.Pokemons)-1 {
+			pokemonStr += fmt.Sprintf("[%d]%s", idx+1, pokemon.Name)
+		} else if idx == 0 {
+			pokemonStr += fmt.Sprintf("[%d]%s|", idx+1, pokemon.Name)
+		} else {
+			if (idx+1)%3 == 0 {
+				pokemonStr += fmt.Sprintf("[%d]%s\n", idx+1, pokemon.Name)
+			} else {
+				pokemonStr += fmt.Sprintf("[%d]%s|", idx+1, pokemon.Name)
+			}
+		}
+
+	}
+	fmt.Println(pokemonStr)
+}
+
+func (ps *PokemonStore) GetPokemonByIdx(pokemonIdx int) (*Pokemon, error) {
+	for idx, currPokemon := range ps.Pokemons {
+		if idx == pokemonIdx-1 {
 			return &currPokemon, nil
 		}
 	}
-	return nil, fmt.Errorf("no pokemon with id %s found in pokemonStore", pokemonId)
+	return nil, fmt.Errorf("no pokemon on %d position found in pokemonStore", pokemonIdx)
 }
 
 func (ps *PokemonStore) CatchPokemon(newPokemon Pokemon, name string) {
@@ -39,22 +61,18 @@ func (ps *PokemonStore) CatchPokemon(newPokemon Pokemon, name string) {
 	ps.Pokemons = append(ps.Pokemons, newPokemon)
 }
 
-func (ps *PokemonStore) RemovePokemon(pokemonID string) error {
+func (ps *PokemonStore) RemovePokemon(pokemonIdx int) error {
 	newPokemon := []Pokemon{}
 	removedPokemon := false
-	for _, currPokemon := range ps.Pokemons {
-		if currPokemon.ID != pokemonID {
+	for idx, currPokemon := range ps.Pokemons {
+		if idx != pokemonIdx {
 			newPokemon = append(newPokemon, currPokemon)
 		} else {
-			if !removedPokemon {
-				removedPokemon = true
-			} else {
-				return fmt.Errorf("2 pokemon of the id %s found in inventory", pokemonID)
-			}
+			removedPokemon = true
 		}
 	}
 	if !removedPokemon {
-		return fmt.Errorf("no item with id %s located in inventory", pokemonID)
+		return fmt.Errorf("no pokemons found in %d position", pokemonIdx)
 	}
 	ps.Pokemons = newPokemon
 	return nil
