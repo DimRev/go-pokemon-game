@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/DimRev/go-pokemon-game/internal/game"
 )
 
 func main() {
@@ -43,7 +45,7 @@ func main() {
 	}
 
 	if start {
-		fmt.Println("Starting game...")
+		game.Test()
 	}
 }
 
